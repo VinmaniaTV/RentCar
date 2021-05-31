@@ -8,10 +8,12 @@ public class Vehicle {
 	private boolean airConditioned;
 	private String gearbox;
 	private String fuel;
+	protected int capacityfuel;
+	protected int fuelincar;
 	private Category category;
 	private boolean isFree;
 	
-	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i) {
+	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i, int fuelincar, int capacityfuel) {
 		this.registrationNumber = r;
 		this.brand = b;
 		this.model = m;
@@ -21,8 +23,18 @@ public class Vehicle {
 		this.fuel = f;
 		this.category = c;
 		this.isFree = i;
+		this.fuelincar = fuelincar;
+		this.capacityfuel = capacityfuel;
 	}
 	
+	public int getFuelincar() {
+		return fuelincar;
+	}
+
+	public void setFuelincar(int fuelincar) {
+		this.fuelincar = fuelincar;
+	}
+
 	public Client isReserved() {
 		// REQUETE BDD
 		return null;
@@ -98,5 +110,13 @@ public class Vehicle {
 
 	public void setFree(boolean isFree) {
 		this.isFree = isFree;
+	}
+
+	public int getCapacityfuel() {
+		return capacityfuel;
+	}
+
+	public void setCapacityfuel(int capacityfuel) {
+		this.capacityfuel = capacityfuel;
 	}
 }
