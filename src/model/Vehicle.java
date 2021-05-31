@@ -12,8 +12,10 @@ public class Vehicle {
 	protected int fuelincar;
 	private Category category;
 	private boolean isFree;
+	private int fuelInCar;
+	private int capacityFuel;
 	
-	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i, int fuelincar, int capacityfuel) {
+	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i, int fuelInCar, int capacityFuel) {
 		this.registrationNumber = r;
 		this.brand = b;
 		this.model = m;
@@ -23,16 +25,8 @@ public class Vehicle {
 		this.fuel = f;
 		this.category = c;
 		this.isFree = i;
-		this.fuelincar = fuelincar;
-		this.capacityfuel = capacityfuel;
-	}
-	
-	public int getFuelincar() {
-		return fuelincar;
-	}
-
-	public void setFuelincar(int fuelincar) {
-		this.fuelincar = fuelincar;
+		this.fuelInCar = fuelInCar;
+		this.capacityFuel = capacityFuel;
 	}
 
 	public Client isReserved() {
@@ -118,5 +112,29 @@ public class Vehicle {
 
 	public void setCapacityfuel(int capacityfuel) {
 		this.capacityfuel = capacityfuel;
+	}
+
+	public int getFuelincar() {
+		return fuelincar;
+	}
+
+	public void setFuelincar(int fuelincar) {
+		this.fuelincar = fuelincar;
+	}
+
+	public int getFuelInCar() {
+		return fuelInCar;
+	}
+
+	public void setFuelInCar(int fuelInCar) {
+		this.fuelInCar = fuelInCar;
+	}
+
+	public int getCapacityFuel() {
+		return capacityFuel;
+	}
+
+	public void setCapacityFuel(int capacityFuel) {
+		this.capacityFuel = capacityFuel;
 	}
 }

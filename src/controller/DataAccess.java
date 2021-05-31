@@ -5,13 +5,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Address;
+import model.Agency;
 import model.Category;
 import model.Client;
 import model.Fidelity;
+import model.Person;
 import model.Vehicle;
 
 public class DataAccess {
@@ -70,7 +73,7 @@ public class DataAccess {
 	public List<Vehicle> getVehiclesPS() {
 		List<Vehicle> listVehicles = new ArrayList<Vehicle>();
 		try {
-	        String sql = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree FROM "
+	        String sql = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelInCar, v.capacityFuel FROM "
 	        		+ "vehicle v INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
 	        		+ "INNER JOIN fuels f ON f.id_fuels = v_id_fuels "
 	        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories;";
@@ -78,7 +81,7 @@ public class DataAccess {
 	        ResultSet rs = s.executeQuery(sql);
 	        while (rs.next()) {
 	        	Category cat = new Category(rs.getString("name"),rs.getDouble("price"),rs.getDouble("bail"));
-	        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("isFree"));
+	        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("v.isFree"),rs.getInt("v.fuelInCar"),rs.getInt("v.capacityFuel"));
 	        	listVehicles.add(vel);
 	        }
 	        
@@ -93,16 +96,25 @@ public class DataAccess {
 	public List<Agency> getAgenciesPS() {
 		List<Agency> listAgencies = new ArrayList<Agency>();
 		try {
-	        String sql = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree FROM "
-	        		+ "vehicle v INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
-	        		+ "INNER JOIN fuels f ON f.id_fuels = v_id_fuels "
-	        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories;";
+	        String sql = "SELECT id_agency, name, phone, gpscoords, street, city, zipCode FROM "
+	        		+ "agency NATURAL JOIN address;";
 	        PreparedStatement s = conn.prepareStatement(sql);
 	        ResultSet rs = s.executeQuery(sql);
 	        while (rs.next()) {
-	        	Category cat = new Category(rs.getString("name"),rs.getDouble("price"),rs.getDouble("bail"));
-	        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("isFree"));
-	        	listAgencies.add(vel);
+	        	Address ad = new Address(rs.getString("street"),rs.getString("city"),rs.getInt("zipCode"));
+	        	String sqlParked = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelInCar, v.capacityFuel FROM "
+		        		+ "vehicle v INNER JOIN parked p ON v.id_vehicle = p.id_vehicle "
+		        		+ "INNER JOIN agency a ON a.id_agency = p.id_agency WHERE a.agency_id = ?;";
+		        PreparedStatement sParked = conn.prepareStatement(sql);
+		        sParked.setInt(1,rs.getInt("id_agency"));
+		        ResultSet rsParked = sParked.executeQuery(sql);
+		        ArrayList<Vehicle> listVehicles = new ArrayList<Vehicle>();
+		        while (rsParked.next()) {
+		        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("v.isFree"),rs.getInt("v.fuelInCar"),rs.getInt("v.capacityFuel"));
+		        	listVehicles.add(vel);
+		        }
+		        Agency ag = new Agency(rs.getString("name"),rs.getInt("phone"),rs.getString("gpscoords"),ad, listVehicles);
+	        	listAgencies.add(ag);
 	        }
 	        
 		} catch (SQLException e) {
@@ -129,11 +141,13 @@ public class DataAccess {
 	      System.out.println("Record deleted successfully");
 	}
 	
+	/*
 	public void modifyPerson(int id_person, String firstname, String lastname, String mail, int phone, String url, String usr, String pass, String address) throws SQLException {
 		deletePerson(id_person);
 		addPerson(firstname,  lastname,  mail,  phone,  url,  usr,  pass, address);
 		
 	}
+	*/
 	
 	public void updatePerson(Connection con, Person person, String mail, String firstname, String address, String lastname, int phone) throws SQLException{
 		Statement MyStmt = con.createStatement();

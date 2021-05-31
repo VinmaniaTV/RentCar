@@ -7,14 +7,22 @@ public class Agency {
 	private int phone;
 	private String gpsCoords;
 	private Address address;
-	private ArrayList<Vehicle> listVehicle;
+	private ArrayList<Vehicle> listVehicles;
 	
 	public Agency(String name, int phone, String gpsCoords, Address address) {
 		this.name = name;
 		this.phone = phone;
 		this.gpsCoords = gpsCoords;
 		this.address = address;
-		this.listVehicle = new ArrayList<Vehicle>();
+		this.listVehicles = new ArrayList<Vehicle>();
+	}
+	
+	public Agency(String name, int phone, String gpsCoords, Address address, ArrayList<Vehicle> listVehicles) {
+		this.name = name;
+		this.phone = phone;
+		this.gpsCoords = gpsCoords;
+		this.address = address;
+		this.listVehicles = listVehicles;
 	}
 
 	public String getName() {
@@ -49,11 +57,11 @@ public class Agency {
 		this.address = address;
 	}
 
-	public ArrayList<Vehicle> getListVehicle() {
-		return listVehicle;
+	public ArrayList<Vehicle> getListVehicles() {
+		return listVehicles;
 	}
 
-	public void setListVehicle(ArrayList<Vehicle> listVehicle) {
-		this.listVehicle = listVehicle;
+	public void setListVehicles(ArrayList<Vehicle> listVehicles) {
+		this.listVehicles = listVehicles;
 	}
 }
