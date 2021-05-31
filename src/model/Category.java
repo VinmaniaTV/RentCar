@@ -34,4 +34,9 @@ public class Category {
 	public void setBail(float bail) {
 		this.bail = bail;
 	}
+
+	public Category getCategory(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

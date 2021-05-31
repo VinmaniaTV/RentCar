@@ -6,8 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import model.Category;
+import model.Person;
 import model.Vehicle;
 
 public class DataAccess {
@@ -51,6 +53,16 @@ public class DataAccess {
 	      System.out.println("Record deleted successfully");
 	}
 	
+	public void modifyPerson(int id_person, String firstname, String lastname, String mail, int phone, String url, String usr, String pass, String address) throws SQLException {
+		deletePerson(id_person);
+		addPerson(firstname,  lastname,  mail,  phone,  url,  usr,  pass, address);
+		
+	}
+	
+	public void updatePerson(Connection con, Person person, String mail, String firstname, String address, String lastname, int phone) throws SQLException{
+		Statement MyStmt = con.createStatement();
+		MyStmt.executeUpdate("UPDATE INTO PERSON (EMAIL, FIRSTNAME, ID_ADDRESS, LASTNAME, PHONE) VALUES ('"+mail+"','"+firstname+"','"+address+"','"+lastname+"','"+phone+"' Where ID_Person = '"+person.getId()+"');");
+	    }
 	//METHODS VEHICLE
 	
 	public void addVehicle(Boolean Airconditioned, String brad, int fuelquantity, boolean isfree, int kilometers, String model, int REGISTRATIONNUMBER, Category categories, String fuels, String gearboxes) throws SQLException {
@@ -58,8 +70,13 @@ public class DataAccess {
 		int n = 0;
 			Statement state = connect.createStatement();
 			
-			n = state.executeUpdate("INSERT INTO VEHICLE (AIRCONDITIONED, BRAND, FUELQUANTITY, CATEGORIES, FUELS, GEARBOXES, ISFREE, KILOMETERS, MODEL, REGISTRATIONNUMBER VALUES ('"+Airconditioned+"','"+brad+"','"+fuelquantity+"','"+categories+"','"+fuels+"','"+gearboxes+"','"+isfree+"','"+kilometers+"','"+model+"','"+REGISTRATIONNUMBER+"');");
+			n = state.executeUpdate("INSERT INTO VEHICLE (AIRCONDITIONED, BRAND, FUELQUANTITY, CATEGORIES, FUELS, GEARBOXES, ISFREE, KILOMETERS, MODEL, REGISTRATIONNUMBER) VALUES ('"+Airconditioned+"','"+brad+"','"+fuelquantity+"','"+categories+"','"+fuels+"','"+gearboxes+"','"+isfree+"','"+kilometers+"','"+model+"','"+REGISTRATIONNUMBER+"');");
 	}
+	
+	public void updateVehicle(Connection con, Vehicle vehicle, Boolean Airconditioned, String brad, int fuelquantity, boolean isfree, int kilometers, String model, int REGISTRATIONNUMBER, Category categories, String fuels, String gearboxes) throws SQLException{
+		Statement MyStmt = con.createStatement();
+		MyStmt.executeUpdate("UPDATE VEHICLE (AIRCONDITIONED, BRAND, FUELQUANTITY, CATEGORIES, FUELS, GEARBOXES, ISFREE, KILOMETERS, MODEL, REGISTRATIONNUMBER) VALUES ('"+Airconditioned+"','"+brad+"','"+fuelquantity+"','"+categories+"','"+fuels+"','"+gearboxes+"','"+isfree+"','"+kilometers+"','"+model+"','"+REGISTRATIONNUMBER+"' Where ID_Vehicle = "+vehicle.getRegistrationNumber()+");");
+	    }
 	
 	public void deleteVehicle(int Vehicle) throws SQLException{
 		MyStmt = conn.prepareStatement("delete from Vehicle where ID_VEHICLE=?");
@@ -71,7 +88,7 @@ public class DataAccess {
 	
 	//METHODS ASKED
 	
-	ObservableList<Vehicule> vehicles = FXCollections.observableArrayList();
+	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 	
 	public void VehicleCatDisp(String categorie, boolean isfree) throws SQLException {
 		MyStmt = conn.prepareStatement("SELECT * from Vehicle where categories = ? and isfree = ?");
@@ -80,7 +97,7 @@ public class DataAccess {
 		myRs = MyStmt.executeQuery();
 		System.out.println(myRs);
 		while(myRs.next()) {
-			vehicles.add(new Vehicle(myRs.getBoolean(1),myRs.getString(2),myRs.getInt(3),myRs.getBoolean(4),myRs.getInt(5),myRs.getString(6),myRs.getInt(7), myRs.getCategory(8),myRs.getString(9),myRs.getString(10)));
+			vehicles.add(new Vehicle(myRs.getString(1),myRs.getString(2),myRs.getString(3),myRs.getInt(4),myRs.getBoolean(5),myRs.getString(6),myRs.getString(7), myRs.getCategory.getInt(8),myRs.getBoolean(9),myRs.getInt(10), myRs.getInt(11)));
 		}
 }
 	
@@ -89,8 +106,8 @@ public class DataAccess {
 			MyStmt = conn.prepareStatement("SELECT * from Vehicle where brand = ?");
 			MyStmt.setString(1,car);
 			myRs = MyStmt.executeQuery();
-			while (myRs.next()) {
-				
+			while(myRs.next()) {
+				vehicles.add(new Vehicle(myRs.getString(1),myRs.getString(2),myRs.getString(3),myRs.getInt(4),myRs.getBoolean(5),myRs.getString(6),myRs.getString(7), myRs.getString(8),myRs.getBoolean(9),myRs.getInt(10), myRs.getInt(11)));
 			}
 		}
 	
