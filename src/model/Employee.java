@@ -13,12 +13,12 @@ public class Employee extends Person {
 	}
 	
 	public void moveVehicle(Vehicle vehicle, Agency agency) {
-		if (agency.getListVehicle().contains(vehicle)) {
+		if (agency.getListVehicles().contains(vehicle)) {
 			System.out.println("Véhicule déjà dans cette agence.");
 		}
 		else {
 			// REQUETE BDD
-			agency.getListVehicle().add(vehicle);
+			agency.getListVehicles().add(vehicle);
 		}
 	}
 
