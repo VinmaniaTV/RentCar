@@ -1,16 +1,27 @@
 package model;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class Fidelity {
 	private Calendar dateStart;
 	private int duration;
 	private String description;
-	private float price;
+	private double price;
 	private int reductionRate;
 	
-	public Fidelity(Calendar dateStart, int duration, String description, float price, int reductionRate) {
+	public Fidelity(Calendar dateStart, int duration, String description, double price, int reductionRate) {
 		this.dateStart = dateStart;
+		this.duration = duration;
+		this.description = description;
+		this.price = price;
+		this.reductionRate = reductionRate;
+	}
+	
+	public Fidelity(Date dateStart, int duration, String description, double price, int reductionRate) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dateStart);
+		this.dateStart = cal;
 		this.duration = duration;
 		this.description = description;
 		this.price = price;
@@ -41,11 +52,11 @@ public class Fidelity {
 		this.description = description;
 	}
 
-	public float getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(float price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 

@@ -5,11 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
+import model.Address;
 import model.Category;
-import model.Person;
+import model.Client;
+import model.Fidelity;
 import model.Vehicle;
 
 public class DataAccess {
@@ -35,6 +37,80 @@ public class DataAccess {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public List<Client> getClientsPS() {
+
+		List<Client> listClients = new ArrayList<Client>();
+		try {
+	        String sql = "SELECT id_client, lastname, firstname, email, phone, street, city, zipCode, _date, duration, description, price, reductionRate FROM client NATURAL JOIN address LEFT NATURAL JOIN fidelity;";
+	        PreparedStatement s = conn.prepareStatement(sql);
+	        ResultSet rs = s.executeQuery(sql);
+	        while (rs.next()) {
+	        	Address ad = new Address(rs.getString("street"),rs.getString("city"),rs.getInt("zipCode"));
+	        	Client cl;
+	        	if (rs.getDate("_date")!=null) {
+	        		Fidelity fi = new Fidelity(rs.getDate("_date"),rs.getInt("duration"),rs.getString("description"),rs.getDouble("price"),rs.getInt("reductionRate"));
+	        		cl = new Client(rs.getInt("id_client"),rs.getString("lastname"),rs.getString("firstname"),rs.getString("email"),rs.getInt("phone"), ad, fi);
+	        	}
+	        	else {
+	        		cl = new Client(rs.getInt("id_client"),rs.getString("lastname"),rs.getString("firstname"),rs.getString("email"),rs.getInt("phone"), ad);
+	        	}
+	        	listClients.add(cl);
+	        }
+	        
+		} catch (SQLException e) {
+			System.out.println("msg : " + e.getMessage());
+			return null;
+		}
+      
+		return listClients;
+	}
+	
+	public List<Vehicle> getVehiclesPS() {
+		List<Vehicle> listVehicles = new ArrayList<Vehicle>();
+		try {
+	        String sql = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree FROM "
+	        		+ "vehicle v INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
+	        		+ "INNER JOIN fuels f ON f.id_fuels = v_id_fuels "
+	        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories;";
+	        PreparedStatement s = conn.prepareStatement(sql);
+	        ResultSet rs = s.executeQuery(sql);
+	        while (rs.next()) {
+	        	Category cat = new Category(rs.getString("name"),rs.getDouble("price"),rs.getDouble("bail"));
+	        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("isFree"));
+	        	listVehicles.add(vel);
+	        }
+	        
+		} catch (SQLException e) {
+			System.out.println("msg : " + e.getMessage());
+			return null;
+		}
+      
+		return listVehicles;
+	}
+	
+	public List<Agency> getAgenciesPS() {
+		List<Agency> listAgencies = new ArrayList<Agency>();
+		try {
+	        String sql = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree FROM "
+	        		+ "vehicle v INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
+	        		+ "INNER JOIN fuels f ON f.id_fuels = v_id_fuels "
+	        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories;";
+	        PreparedStatement s = conn.prepareStatement(sql);
+	        ResultSet rs = s.executeQuery(sql);
+	        while (rs.next()) {
+	        	Category cat = new Category(rs.getString("name"),rs.getDouble("price"),rs.getDouble("bail"));
+	        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("isFree"));
+	        	listAgencies.add(vel);
+	        }
+	        
+		} catch (SQLException e) {
+			System.out.println("msg : " + e.getMessage());
+			return null;
+		}
+      
+		return listAgencies;
 	}
 	
 	

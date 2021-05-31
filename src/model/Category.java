@@ -2,10 +2,10 @@ package model;
 
 public class Category {
 	private String name;
-	private float price;
-	private float bail;
+	private double price;
+	private double bail;
 	
-	public Category(String name, float price, float bail) {
+	public Category(String name, double price, double bail) {
 		this.name = name;
 		this.price = price;
 		this.bail = bail;
@@ -19,19 +19,19 @@ public class Category {
 		this.name = name;
 	}
 
-	public float getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(float price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
-	public float getBail() {
+	public double getBail() {
 		return bail;
 	}
 
-	public void setBail(float bail) {
+	public void setBail(double bail) {
 		this.bail = bail;
 	}
 

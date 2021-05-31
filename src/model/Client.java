@@ -56,7 +56,7 @@ public class Client extends Person {
 			return null;
 		}
 		else {
-			// REQUETE BDD - Création de devis
+			// REQUETE BDD - Création de devis (ne pas oublier la fidelité)
 			vehicle.setFree(true);
 			return vehicle;
 		}
@@ -64,7 +64,7 @@ public class Client extends Person {
 	
 	public Vehicle rentVehicle(Vehicle vehicle) {
 		if (vehicle.isReserved().getId() == this.getId() || vehicle.isFree()) {
-			// REQUETE BDD
+			// REQUETE BDD - Transformation devis
 			listRented.add(vehicle);
 			return vehicle;
 		}
@@ -88,7 +88,7 @@ public class Client extends Person {
 	}
 
 	public void returnVehicle(Vehicle vehicle) {
-		// REQUETE BDD
+		// REQUETE BDD - Création facture
 		this.listRented.remove(vehicle);
 	}
 
