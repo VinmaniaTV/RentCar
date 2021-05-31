@@ -1,18 +1,28 @@
 package model;
 
 public abstract class Person {
+	private int id;
 	private String lastname;
 	private String firstname;
 	private String email;
 	private int phone;
 	private Address address;
 	
-	public Person(String lastname, String firstname, String email, int phone, Address address) {
+	public Person(int id, String lastname, String firstname, String email, int phone, Address address) {
+		this.id = id;
 		this.lastname = lastname;
 		this.firstname = firstname;
 		this.email = email;
 		this.phone = phone;
 		this.address = address;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getLastname() {

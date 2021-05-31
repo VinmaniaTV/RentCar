@@ -9,8 +9,9 @@ public class Vehicle {
 	private String gearbox;
 	private String fuel;
 	private Category category;
+	private boolean isFree;
 	
-	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c) {
+	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i) {
 		this.registrationNumber = r;
 		this.brand = b;
 		this.model = m;
@@ -19,6 +20,12 @@ public class Vehicle {
 		this.gearbox = g;
 		this.fuel = f;
 		this.category = c;
+		this.isFree = i;
+	}
+	
+	public Client isReserved() {
+		// REQUETE BDD
+		return null;
 	}
 
 	public String getRegistrationNumber() {
@@ -83,5 +90,13 @@ public class Vehicle {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public boolean isFree() {
+		return isFree;
+	}
+
+	public void setFree(boolean isFree) {
+		this.isFree = isFree;
 	}
 }
