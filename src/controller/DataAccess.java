@@ -80,7 +80,7 @@ public class DataAccess {
 	        PreparedStatement s = conn.prepareStatement(sql);
 	        ResultSet rs = s.executeQuery(sql);
 	        while (rs.next()) {
-	        	Category cat = new Category(rs.getString("name"),rs.getDouble("price"),rs.getDouble("bail"));
+	        	Category cat = new Category(rs.getString("c.name"),rs.getDouble("c.price"),rs.getDouble("c.bail"));
 	        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("v.isFree"),rs.getInt("v.fuelInCar"),rs.getInt("v.capacityFuel"));
 	        	listVehicles.add(vel);
 	        }
@@ -104,13 +104,17 @@ public class DataAccess {
 	        	Address ad = new Address(rs.getString("street"),rs.getString("city"),rs.getInt("zipCode"));
 	        	String sqlParked = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelInCar, v.capacityFuel FROM "
 		        		+ "vehicle v INNER JOIN parked p ON v.id_vehicle = p.id_vehicle "
-		        		+ "INNER JOIN agency a ON a.id_agency = p.id_agency WHERE a.agency_id = ?;";
-		        PreparedStatement sParked = conn.prepareStatement(sql);
+		        		+ "INNER JOIN agency a ON a.id_agency = p.id_agency "
+		        		+ "INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
+		        		+ "INNER JOIN fuels f ON f.id_fuels = v_id_fuels "
+		        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories WHERE a.agency_id = ?;";
+		        PreparedStatement sParked = conn.prepareStatement(sqlParked);
 		        sParked.setInt(1,rs.getInt("id_agency"));
 		        ResultSet rsParked = sParked.executeQuery(sql);
 		        ArrayList<Vehicle> listVehicles = new ArrayList<Vehicle>();
 		        while (rsParked.next()) {
-		        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("v.isFree"),rs.getInt("v.fuelInCar"),rs.getInt("v.capacityFuel"));
+		        	Category cat = new Category(rsParked.getString("c.name"),rsParked.getDouble("c.price"),rsParked.getDouble("c.bail"));
+		        	Vehicle vel = new Vehicle(rsParked.getString("v.registrationNumber"),rsParked.getString("v.brand"),rsParked.getString("v.model"),rsParked.getInt("v.kilometers"),rsParked.getBoolean("v.airConditioned"),rsParked.getString("g.name"),rsParked.getString("f.name"),cat,rsParked.getBoolean("v.isFree"),rsParked.getInt("v.fuelInCar"),rsParked.getInt("v.capacityFuel"));
 		        	listVehicles.add(vel);
 		        }
 		        Agency ag = new Agency(rs.getString("name"),rs.getInt("phone"),rs.getString("gpscoords"),ad, listVehicles);
