@@ -13,6 +13,7 @@ import model.Address;
 import model.Agency;
 import model.Category;
 import model.Client;
+import model.Employee;
 import model.Fidelity;
 import model.Person;
 import model.Vehicle;
@@ -76,7 +77,7 @@ public class DataAccess {
 	public List<Vehicle> getVehiclesPS() {
 		List<Vehicle> listVehicles = new ArrayList<Vehicle>();
 		try {
-	        String sql = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuantity, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelCapacity FROM "
+	        String sql = "SELECT v.id_vehicle, v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuantity, g.name, f.name as fuelName, c.name, c.price, c.bail, v.isFree, v.fuelQuantity, v.fuelCapacity FROM "
 	        		+ "vehicle v INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
 	        		+ "INNER JOIN fuels f ON f.id_fuels = v.id_fuels "
 	        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories;";
@@ -84,7 +85,7 @@ public class DataAccess {
 	        ResultSet rs = s.executeQuery(sql);
 	        while (rs.next()) {
 	        	Category cat = new Category(rs.getString("name"),rs.getDouble("price"),rs.getDouble("bail"));
-	        	Vehicle vel = new Vehicle(rs.getString("registrationNumber"),rs.getString("brand"),rs.getString("model"),rs.getInt("kilometers"),rs.getBoolean("airConditioned"),rs.getString("name"),rs.getString("name"),cat,rs.getBoolean("isFree"),rs.getInt("fuelCapacity"));
+	        	Vehicle vel = new Vehicle(rs.getInt("id_vehicle"),rs.getString("registrationNumber"),rs.getString("brand"),rs.getString("model"),rs.getInt("kilometers"),rs.getBoolean("airConditioned"),rs.getString("name"),rs.getString("fuelName"),cat,rs.getBoolean("isFree"),rs.getDouble("fuelQuantity"),rs.getInt("fuelCapacity"));
 	        	listVehicles.add(vel);
 	        }
 	        
@@ -105,18 +106,19 @@ public class DataAccess {
 	        ResultSet rs = s.executeQuery(sql);
 	        while (rs.next()) {
 	        	Address ad = new Address(rs.getString("street"),rs.getString("city"),rs.getInt("zipCode"));
-	        	String sqlParked = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuantity, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelCapacity FROM "
+	        	String sqlParked = "SELECT v.id_vehicle, v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuantity, g.name, f.name as fuelName, c.name, c.price, c.bail, v.isFree, v.fuelCapacity FROM "
 		        		+ "vehicle v INNER JOIN parked p ON v.id_vehicle = p.id_vehicle "
 		        		+ "INNER JOIN agency a ON a.id_agency = p.id_agency "
 		        		+ "INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
 		        		+ "INNER JOIN fuels f ON f.id_fuels = v.id_fuels "
 		        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories WHERE a.id_agency = " + rs.getInt("id_agency") + ";";
+	        	System.out.println(sqlParked);
 		        PreparedStatement sParked = conn.prepareStatement(sqlParked);
 		        ResultSet rsParked = sParked.executeQuery(sqlParked);
 		        ArrayList<Vehicle> listVehicles = new ArrayList<Vehicle>();
 		        while (rsParked.next()) {
 		        	Category cat = new Category(rsParked.getString("name"),rsParked.getDouble("price"),rsParked.getDouble("bail"));
-		        	Vehicle vel = new Vehicle(rsParked.getString("registrationNumber"),rsParked.getString("brand"),rsParked.getString("model"),rsParked.getInt("kilometers"),rsParked.getBoolean("airConditioned"),rsParked.getString("name"),rsParked.getString("name"),cat,rsParked.getBoolean("isFree"),rsParked.getInt("fuelCapacity"));
+		        	Vehicle vel = new Vehicle(rsParked.getInt("id_vehicle"),rsParked.getString("registrationNumber"),rsParked.getString("brand"),rsParked.getString("model"),rsParked.getInt("kilometers"),rsParked.getBoolean("airConditioned"),rsParked.getString("name"),rsParked.getString("fuelName"),cat,rsParked.getBoolean("isFree"),rsParked.getDouble("fuelQuantity"),rsParked.getInt("fuelCapacity"));
 		        	listVehicles.add(vel);
 		        }
 		        Agency ag = new Agency(rs.getString("name"),rs.getInt("phone"),rs.getString("gpscoords"),ad, listVehicles);
@@ -147,6 +149,23 @@ public class DataAccess {
 	      System.out.println("Record deleted successfully");
 	}
 	
+	public Employee checkLogin(String login, String password) {
+		Employee res = null;
+		try {
+	        String sql = "SELECT * FROM employee NATURAL JOIN person NATURLA JOIN address NATURAL JOIN jobs WHERE login = " + login + " AND password = " + password + " ;";
+	        PreparedStatement s = conn.prepareStatement(sql);
+	        ResultSet rs = s.executeQuery(sql);
+	        while (rs.next()) {
+	        	Address ad = new Address(rs.getString("street"),rs.getString("city"),rs.getInt("zipCode"));
+	        	res = new Employee(rs.getInt("id_person"),rs.getString("lastname"),rs.getString("firstname"),rs.getString("email"),rs.getInt("phone"),ad,rs.getString("name"));		
+	        }
+		} catch (SQLException e) {
+			System.out.println("msg : " + e.getMessage());
+			return null;
+		}
+		return res;
+	}
+	
 	/*
 	public void modifyPerson(int id_person, String firstname, String lastname, String mail, int phone, String url, String usr, String pass, String address) throws SQLException {
 		deletePerson(id_person);
@@ -157,9 +176,50 @@ public class DataAccess {
 	
 	public void updatePerson(Connection con, Person person, String mail, String firstname, String address, String lastname, int phone) throws SQLException{
 		Statement MyStmt = con.createStatement();
-		MyStmt.executeUpdate("UPDATE INTO PERSON (EMAIL, FIRSTNAME, ID_ADDRESS, LASTNAME, PHONE) VALUES ('"+mail+"','"+firstname+"','"+address+"','"+lastname+"','"+phone+"' Where ID_Person = '"+person.getId()+"');");
-	    }
+		MyStmt.executeUpdate("UPDATE person SET EMAIL = '" + mail + "', FIRSTNAME = '" + firstname + "', ID_ADDRESS = '" + address + "', LASTNAME = '" + lastname + "', PHONE = '" + phone + "' WHERE ID_Person = " + person.getId() + ";");
+	}
 	//METHODS VEHICLE
+	
+	public boolean isVehicleFree(Vehicle vehicle) {
+		boolean res = true;
+		try {
+	        String sql = "SELECT isFree from VEHICLE WHERE registrationNumber = " + vehicle.getRegistrationNumber() + ";";
+	        PreparedStatement s = conn.prepareStatement(sql);
+	        ResultSet rs = s.executeQuery(sql);
+	        while (rs.next()) {
+	        	res = rs.getBoolean("isFree");
+	        }
+	        
+		} catch (SQLException e) {
+			System.out.println("msg : " + e.getMessage());;
+		}
+		return res;
+	}
+	
+	public void reserveVehicle(Vehicle vehicle, Client client) {
+		if(this.isVehicleFree(vehicle)) {
+			try {
+		        this.updateVehicle(conn, vehicle, vehicle.isAirConditioned(), vehicle.getBrand(), vehicle.getFuelQuantity(), false, vehicle.getKilometers(), vehicle.getModel(), vehicle.getRegistrationNumber(), vehicle.getCategory(), vehicle.getFuel(), vehicle.getGearbox());
+		        client.getListReserved().add(vehicle);
+			} catch (SQLException e) {
+				System.out.println("msg : " + e.getMessage());;
+			}
+		} else {
+			System.out.println("Erreur: Le véhicule n'est pas disponible.");
+		}
+	}
+	
+	public void addReservation(Vehicle vehicle, Client client) {
+		try {
+	        String sql = "INSERT INTO reserved id_vehicle, id_client VALUES (" + vehicle.getId() + "," + client.getId() + ");";
+	        PreparedStatement s = conn.prepareStatement(sql);
+	        s.executeQuery(sql);
+	        
+		} catch (SQLException e) {
+			System.out.println("msg : " + e.getMessage());
+			return;
+		}
+	}
 	
 	public void addVehicle(Boolean Airconditioned, String brad, int fuelquantity, boolean isfree, int kilometers, String model, int REGISTRATIONNUMBER, Category categories, String fuels, String gearboxes) throws SQLException {
 		@SuppressWarnings("unused")
@@ -169,9 +229,9 @@ public class DataAccess {
 			n = state.executeUpdate("INSERT INTO VEHICLE (AIRCONDITIONED, BRAND, FUELQUANTITY, CATEGORIES, FUELS, GEARBOXES, ISFREE, KILOMETERS, MODEL, REGISTRATIONNUMBER) VALUES ('"+Airconditioned+"','"+brad+"','"+fuelquantity+"','"+categories+"','"+fuels+"','"+gearboxes+"','"+isfree+"','"+kilometers+"','"+model+"','"+REGISTRATIONNUMBER+"');");
 	}
 	
-	public void updateVehicle(Connection con, Vehicle vehicle, Boolean Airconditioned, String brad, int fuelquantity, boolean isfree, int kilometers, String model, int REGISTRATIONNUMBER, Category categories, String fuels, String gearboxes) throws SQLException{
+	public void updateVehicle(Connection con, Vehicle vehicle, Boolean Airconditioned, String brand, double fuelquantity, boolean isfree, int kilometers, String model, String REGISTRATIONNUMBER, Category categories, String fuels, String gearboxes) throws SQLException{
 		Statement MyStmt = con.createStatement();
-		MyStmt.executeUpdate("UPDATE VEHICLE (AIRCONDITIONED, BRAND, FUELQUANTITY, CATEGORIES, FUELS, GEARBOXES, ISFREE, KILOMETERS, MODEL, REGISTRATIONNUMBER) VALUES ('"+Airconditioned+"','"+brad+"','"+fuelquantity+"','"+categories+"','"+fuels+"','"+gearboxes+"','"+isfree+"','"+kilometers+"','"+model+"','"+REGISTRATIONNUMBER+"' Where ID_Vehicle = "+vehicle.getRegistrationNumber()+");");
+		MyStmt.executeUpdate("UPDATE VEHICLE (AIRCONDITIONED, BRAND, FUELQUANTITY, CATEGORIES, FUELS, GEARBOXES, ISFREE, KILOMETERS, MODEL, REGISTRATIONNUMBER) VALUES ('"+Airconditioned+"','"+brand+"','"+fuelquantity+"','"+categories+"','"+fuels+"','"+gearboxes+"','"+isfree+"','"+kilometers+"','"+model+"','"+REGISTRATIONNUMBER+"' Where ID_Vehicle = "+vehicle.getRegistrationNumber()+");");
 	    }
 	
 	public void deleteVehicle(int Vehicle) throws SQLException{

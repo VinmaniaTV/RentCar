@@ -12,16 +12,16 @@ public class Bill extends Rental {
 	
 	public int penality(Vehicle vehicle) {
 		int penality = 0;
-		if (vehicle.getFuelincar() == 0) {
+		if (vehicle.getFuelQuantity() == 0) {
 			return penality+=100;
 		}
-		if (vehicle.getFuelincar() <= vehicle.getCapacityfuel()/4 & vehicle.getFuelincar()>=0) {
+		if (vehicle.getFuelQuantity() <= vehicle.getFuelQuantity()/4 & vehicle.getFuelQuantity()>=0) {
 			return penality+=80;
 		}
-		if (vehicle.getFuelincar() <= vehicle.getCapacityfuel()/2 & vehicle.getFuelincar()>=vehicle.getCapacityfuel()/4) {
+		if (vehicle.getFuelQuantity() <= vehicle.getCapacityFuel()/2 & vehicle.getFuelQuantity()>=vehicle.getCapacityFuel()/4) {
 			return penality+=50;
 		}
-		if (vehicle.getFuelincar() <= 3*vehicle.getCapacityfuel()/4 & vehicle.getFuelincar()>=vehicle.getCapacityfuel()/2) {
+		if (vehicle.getFuelQuantity() <= 3*vehicle.getCapacityFuel()/4 & vehicle.getFuelQuantity()>=vehicle.getCapacityFuel()/2) {
 			return penality+=25;
 		}
 		else {

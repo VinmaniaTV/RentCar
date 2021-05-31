@@ -1,6 +1,7 @@
 package model;
 
 public class Vehicle {
+	private int id;
 	private String registrationNumber;
 	private String brand;
 	private String model;
@@ -8,13 +9,13 @@ public class Vehicle {
 	private boolean airConditioned;
 	private String gearbox;
 	private String fuel;
-	protected int capacityfuel;
-	protected int fuelincar;
 	private Category category;
 	private boolean isFree;
+	private double fuelQuantity;
 	private int capacityFuel;
 	
-	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i, int capacityFuel) {
+	public Vehicle(int id, String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i, double fuelQuantity, int capacityFuel) {
+		this.id = id;
 		this.registrationNumber = r;
 		this.brand = b;
 		this.model = m;
@@ -24,6 +25,7 @@ public class Vehicle {
 		this.fuel = f;
 		this.category = c;
 		this.isFree = i;
+		this.fuelQuantity = fuelQuantity;
 		this.capacityFuel = capacityFuel;
 	}
 
@@ -34,10 +36,18 @@ public class Vehicle {
 
 	@Override
 	public String toString() {
-		return "Vehicle [registrationNumber=" + registrationNumber + ", brand=" + brand + ", model=" + model
-				+ ", kilometers=" + kilometers + ", airConditioned=" + airConditioned + ", gearbox=" + gearbox
-				+ ", fuel=" + fuel + ", capacityfuel=" + capacityfuel + ", fuelincar=" + fuelincar + ", category="
-				+ category + ", isFree=" + isFree + ", capacityFuel=" + capacityFuel + "]";
+		return "Vehicle [id=" + id + ", registrationNumber=" + registrationNumber + ", brand=" + brand + ", model="
+				+ model + ", kilometers=" + kilometers + ", airConditioned=" + airConditioned + ", gearbox=" + gearbox
+				+ ", fuel=" + fuel + ", category=" + category + ", isFree=" + isFree + ", fuelQuantity=" + fuelQuantity
+				+ ", capacityFuel=" + capacityFuel + "]";
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getRegistrationNumber() {
@@ -112,20 +122,13 @@ public class Vehicle {
 		this.isFree = isFree;
 	}
 
-	public int getCapacityfuel() {
-		return capacityfuel;
+
+	public double getFuelQuantity() {
+		return fuelQuantity;
 	}
 
-	public void setCapacityfuel(int capacityfuel) {
-		this.capacityfuel = capacityfuel;
-	}
-
-	public int getFuelincar() {
-		return fuelincar;
-	}
-
-	public void setFuelincar(int fuelincar) {
-		this.fuelincar = fuelincar;
+	public void setFuelQuantity(double fuelQuantity) {
+		this.fuelQuantity = fuelQuantity;
 	}
 
 	public int getCapacityFuel() {

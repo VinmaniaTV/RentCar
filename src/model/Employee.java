@@ -1,14 +1,10 @@
 package model;
 
 public class Employee extends Person {
-	private String login;
-	private String password;
 	private String job;
 	
-	public Employee(int id, String lastname, String firstname, String email, int phone, Address address, String login, String password, String job) {
+	public Employee(int id, String lastname, String firstname, String email, int phone, Address address, String job) {
 		super(id, lastname, firstname, email, phone, address);
-		this.login = login;
-		this.password = password;
 		this.job = job;
 	}
 	
@@ -24,23 +20,7 @@ public class Employee extends Person {
 
 	@Override
 	public String toString() {
-		return "Employee [login=" + login + ", password=" + password + ", job=" + job + "]";
-	}
-
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+		return "Employee [job=" + job + "]";
 	}
 
 	public String getJob() {
