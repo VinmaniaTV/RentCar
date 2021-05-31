@@ -46,7 +46,10 @@ public class DataAccess {
 
 		List<Client> listClients = new ArrayList<Client>();
 		try {
-	        String sql = "SELECT id_client, lastname, firstname, email, phone, street, city, zipCode, _date, duration, description, price, reductionRate FROM client NATURAL JOIN address LEFT NATURAL JOIN fidelity;";
+	        String sql = "SELECT c.id_client, lastname, firstname, email, phone, street, city, zipCode, _date, duration, description, price, reductionRate FROM client c "
+	        		+ "INNER JOIN person p on c.id_person = p.id_person "
+	        		+ "INNER JOIN address a ON p.id_address = a.id_address "
+	        		+ "LEFT JOIN fidelity f ON c.id_client = f.id_client;";
 	        PreparedStatement s = conn.prepareStatement(sql);
 	        ResultSet rs = s.executeQuery(sql);
 	        while (rs.next()) {
@@ -73,15 +76,15 @@ public class DataAccess {
 	public List<Vehicle> getVehiclesPS() {
 		List<Vehicle> listVehicles = new ArrayList<Vehicle>();
 		try {
-	        String sql = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelInCar, v.capacityFuel FROM "
+	        String sql = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuantity, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelCapacity FROM "
 	        		+ "vehicle v INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
-	        		+ "INNER JOIN fuels f ON f.id_fuels = v_id_fuels "
+	        		+ "INNER JOIN fuels f ON f.id_fuels = v.id_fuels "
 	        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories;";
 	        PreparedStatement s = conn.prepareStatement(sql);
 	        ResultSet rs = s.executeQuery(sql);
 	        while (rs.next()) {
-	        	Category cat = new Category(rs.getString("c.name"),rs.getDouble("c.price"),rs.getDouble("c.bail"));
-	        	Vehicle vel = new Vehicle(rs.getString("v.registrationNumber"),rs.getString("v.brand"),rs.getString("v.model"),rs.getInt("v.kilometers"),rs.getBoolean("v.airConditioned"),rs.getString("g.name"),rs.getString("f.name"),cat,rs.getBoolean("v.isFree"),rs.getInt("v.fuelInCar"),rs.getInt("v.capacityFuel"));
+	        	Category cat = new Category(rs.getString("name"),rs.getDouble("price"),rs.getDouble("bail"));
+	        	Vehicle vel = new Vehicle(rs.getString("registrationNumber"),rs.getString("brand"),rs.getString("model"),rs.getInt("kilometers"),rs.getBoolean("airConditioned"),rs.getString("name"),rs.getString("name"),cat,rs.getBoolean("isFree"),rs.getInt("fuelCapacity"));
 	        	listVehicles.add(vel);
 	        }
 	        
@@ -102,19 +105,18 @@ public class DataAccess {
 	        ResultSet rs = s.executeQuery(sql);
 	        while (rs.next()) {
 	        	Address ad = new Address(rs.getString("street"),rs.getString("city"),rs.getInt("zipCode"));
-	        	String sqlParked = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuality, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelInCar, v.capacityFuel FROM "
+	        	String sqlParked = "SELECT v.registrationNumber, v.brand, v.model, v.kilometers, v.airConditioned, v.fuelQuantity, g.name, f.name, c.name, c.price, c.bail, v.isFree, v.fuelCapacity FROM "
 		        		+ "vehicle v INNER JOIN parked p ON v.id_vehicle = p.id_vehicle "
 		        		+ "INNER JOIN agency a ON a.id_agency = p.id_agency "
 		        		+ "INNER JOIN gearboxes g ON v.id_gearboxes = g.id_gearboxes "
-		        		+ "INNER JOIN fuels f ON f.id_fuels = v_id_fuels "
-		        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories WHERE a.agency_id = ?;";
+		        		+ "INNER JOIN fuels f ON f.id_fuels = v.id_fuels "
+		        		+ "INNER JOIN categories c ON c.id_categories = v.id_categories WHERE a.id_agency = " + rs.getInt("id_agency") + ";";
 		        PreparedStatement sParked = conn.prepareStatement(sqlParked);
-		        sParked.setInt(1,rs.getInt("id_agency"));
-		        ResultSet rsParked = sParked.executeQuery(sql);
+		        ResultSet rsParked = sParked.executeQuery(sqlParked);
 		        ArrayList<Vehicle> listVehicles = new ArrayList<Vehicle>();
 		        while (rsParked.next()) {
-		        	Category cat = new Category(rsParked.getString("c.name"),rsParked.getDouble("c.price"),rsParked.getDouble("c.bail"));
-		        	Vehicle vel = new Vehicle(rsParked.getString("v.registrationNumber"),rsParked.getString("v.brand"),rsParked.getString("v.model"),rsParked.getInt("v.kilometers"),rsParked.getBoolean("v.airConditioned"),rsParked.getString("g.name"),rsParked.getString("f.name"),cat,rsParked.getBoolean("v.isFree"),rsParked.getInt("v.fuelInCar"),rsParked.getInt("v.capacityFuel"));
+		        	Category cat = new Category(rsParked.getString("name"),rsParked.getDouble("price"),rsParked.getDouble("bail"));
+		        	Vehicle vel = new Vehicle(rsParked.getString("registrationNumber"),rsParked.getString("brand"),rsParked.getString("model"),rsParked.getInt("kilometers"),rsParked.getBoolean("airConditioned"),rsParked.getString("name"),rsParked.getString("name"),cat,rsParked.getBoolean("isFree"),rsParked.getInt("fuelCapacity"));
 		        	listVehicles.add(vel);
 		        }
 		        Agency ag = new Agency(rs.getString("name"),rs.getInt("phone"),rs.getString("gpscoords"),ad, listVehicles);
@@ -191,7 +193,7 @@ public class DataAccess {
 		myRs = MyStmt.executeQuery();
 		System.out.println(myRs);
 		while(myRs.next()) {
-			vehicles.add(new Vehicle(myRs.getString(1),myRs.getString(2),myRs.getString(3),myRs.getInt(4),myRs.getBoolean(5),myRs.getString(6),myRs.getString(7), myRs.getCategory.getInt(8),myRs.getBoolean(9),myRs.getInt(10), myRs.getInt(11)));
+			//vehicles.add(new Vehicle(myRs.getString(1),myRs.getString(2),myRs.getString(3),myRs.getInt(4),myRs.getBoolean(5),myRs.getString(6),myRs.getString(7), myRs.getCategory.getInt(8),myRs.getBoolean(9),myRs.getInt(10), myRs.getInt(11)));
 		}
 }
 	
@@ -201,7 +203,7 @@ public class DataAccess {
 			MyStmt.setString(1,car);
 			myRs = MyStmt.executeQuery();
 			while(myRs.next()) {
-				vehicles.add(new Vehicle(myRs.getString(1),myRs.getString(2),myRs.getString(3),myRs.getInt(4),myRs.getBoolean(5),myRs.getString(6),myRs.getString(7), myRs.getString(8),myRs.getBoolean(9),myRs.getInt(10), myRs.getInt(11)));
+				//vehicles.add(new Vehicle(myRs.getString(1),myRs.getString(2),myRs.getString(3),myRs.getInt(4),myRs.getBoolean(5),myRs.getString(6),myRs.getString(7), myRs.getString(8),myRs.getBoolean(9),myRs.getInt(10), myRs.getInt(11)));
 			}
 		}
 	

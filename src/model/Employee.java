@@ -22,6 +22,11 @@ public class Employee extends Person {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Employee [login=" + login + ", password=" + password + ", job=" + job + "]";
+	}
+
 	public String getLogin() {
 		return login;
 	}

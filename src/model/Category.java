@@ -11,6 +11,11 @@ public class Category {
 		this.bail = bail;
 	}
 
+	@Override
+	public String toString() {
+		return "Category [name=" + name + ", price=" + price + ", bail=" + bail + "]";
+	}
+
 	public String getName() {
 		return name;
 	}

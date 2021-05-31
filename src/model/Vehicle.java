@@ -12,10 +12,9 @@ public class Vehicle {
 	protected int fuelincar;
 	private Category category;
 	private boolean isFree;
-	private int fuelInCar;
 	private int capacityFuel;
 	
-	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i, int fuelInCar, int capacityFuel) {
+	public Vehicle(String r, String b, String m, int k, boolean a, String g, String f, Category c, boolean i, int capacityFuel) {
 		this.registrationNumber = r;
 		this.brand = b;
 		this.model = m;
@@ -25,13 +24,20 @@ public class Vehicle {
 		this.fuel = f;
 		this.category = c;
 		this.isFree = i;
-		this.fuelInCar = fuelInCar;
 		this.capacityFuel = capacityFuel;
 	}
 
 	public Client isReserved() {
 		// REQUETE BDD
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		return "Vehicle [registrationNumber=" + registrationNumber + ", brand=" + brand + ", model=" + model
+				+ ", kilometers=" + kilometers + ", airConditioned=" + airConditioned + ", gearbox=" + gearbox
+				+ ", fuel=" + fuel + ", capacityfuel=" + capacityfuel + ", fuelincar=" + fuelincar + ", category="
+				+ category + ", isFree=" + isFree + ", capacityFuel=" + capacityFuel + "]";
 	}
 
 	public String getRegistrationNumber() {
@@ -120,14 +126,6 @@ public class Vehicle {
 
 	public void setFuelincar(int fuelincar) {
 		this.fuelincar = fuelincar;
-	}
-
-	public int getFuelInCar() {
-		return fuelInCar;
-	}
-
-	public void setFuelInCar(int fuelInCar) {
-		this.fuelInCar = fuelInCar;
 	}
 
 	public int getCapacityFuel() {

@@ -28,6 +28,12 @@ public class Fidelity {
 		this.reductionRate = reductionRate;
 	}
 
+	@Override
+	public String toString() {
+		return "Fidelity [dateStart=" + dateStart + ", duration=" + duration + ", description=" + description
+				+ ", price=" + price + ", reductionRate=" + reductionRate + "]";
+	}
+
 	public Calendar getDateStart() {
 		return dateStart;
 	}

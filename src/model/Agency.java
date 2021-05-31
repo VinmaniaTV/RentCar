@@ -25,6 +25,12 @@ public class Agency {
 		this.listVehicles = listVehicles;
 	}
 
+	@Override
+	public String toString() {
+		return "Agency [name=" + name + ", phone=" + phone + ", gpsCoords=" + gpsCoords + ", address=" + address
+				+ ", listVehicles=" + listVehicles + "]";
+	}
+
 	public String getName() {
 		return name;
 	}

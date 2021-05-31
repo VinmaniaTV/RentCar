@@ -70,7 +70,12 @@ public class Client extends Person {
 		}
 		return null;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Client [fidelity=" + fidelity + ", listReserved=" + listReserved + ", listRented=" + listRented + "]";
+	}
+
 	public ArrayList<Vehicle> getListReserved() {
 		return listReserved;
 	}
